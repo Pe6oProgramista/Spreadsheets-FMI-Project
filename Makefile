@@ -34,7 +34,7 @@ SUBDIRS = $(patsubst $(SRC_DIR)/%/.,%,$(call rec_wildcard,$(SRC_DIR)/,*/.))
 
 TESTS = $(call rec_wildcard, $(TEST_DIR)/,*.cpp)
 
-build_test: build
+build_test: build | mk_bin_dir
 ifeq ($(name),)
 	$(info ERROR: Input test name: "make build_test name=test(.cpp)")
 else
@@ -53,6 +53,9 @@ $(OBJS): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp | mk_build_dirs
 
 mk_build_dirs:
 	$(foreach d, $(SUBDIRS), mkdir "$(OBJ_DIR)/$d" &)
+
+mk_bin_dir:
+	mkdir $(BIN_DIR)
 
 clean_bin:
 ifeq ($(OSFLAG),WIN)
