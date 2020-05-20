@@ -21,6 +21,8 @@ namespace e_table {
     std::string App::get_app_filename() const { return app_filename; }
     void App::set_app_filename(std::string filename) { app_filename = filename; }
 
+    const std::vector<Operation*>& App::get_operations() const { return operations; }
+
     void App::add_operation(Operation* operation) {
         operations.push_back(operation);
     }
@@ -32,11 +34,6 @@ namespace e_table {
 			}
 		}
 		throw OperationException("ERROR: Unknown operation");
-    }
-
-    // TODO
-    void update() {
-
     }
 
     // read/write funcitons

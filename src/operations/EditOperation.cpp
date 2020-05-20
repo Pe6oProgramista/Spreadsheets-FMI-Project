@@ -10,9 +10,18 @@ namespace e_table {
     EditOperation::EditOperation(App& app)
         : Operation(app, "edit", "change value of cell <coordinates> to <value>", 2, "<coordinates> <value>") {}
     
-    void EditOperation::execute(std::vector<std::string>& args) {
-        if(get_args_count() != args.size()) {
+    void EditOperation::execute(const std::vector<std::string>& args) {
+        if(!app.get_status()) {
+            throw OperationException("ERROR: There's no opened file. Please open a file and try again");
+        }
+
+        if(args.size() < 1) {
             throw OperationException("ERROR: Different count of arguments");
+        }
+
+        std::string value = "";
+        for(std::size_t i = 1; i < args.size(); i++) {
+            value += args[i] + " ";
         }
 
         std::string::const_iterator it = args[0].begin();
@@ -33,7 +42,7 @@ namespace e_table {
                     it++;
                 }
 
-                app.get_table().get_row(row)->edit_cell(col, args[1]);
+                app.get_table().get_row(row)->edit_cell(col, value);
                 return;
             }
         }

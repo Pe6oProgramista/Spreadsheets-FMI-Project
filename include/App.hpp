@@ -15,7 +15,7 @@ namespace e_table {
 
         std::vector<Operation*> operations;
 
-        bool status;
+        bool status = false;
         std::string app_filename;
     
     public:
@@ -32,6 +32,7 @@ namespace e_table {
         std::string get_app_filename() const;
         void set_app_filename(std::string filename);
     
+        const std::vector<Operation*>& get_operations() const;
         void add_operation(Operation* operation);
         Operation* find_operation(std::string name);
 

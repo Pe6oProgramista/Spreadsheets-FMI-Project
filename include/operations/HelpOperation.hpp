@@ -4,9 +4,9 @@
 
 namespace e_table {
 
-    class PrintOperation : public Operation {
+    class HelpOperation : public Operation {
     public:
-        PrintOperation(App& app);
+        HelpOperation(App& app);
         
         void execute(const std::vector<std::string>& args);
     };

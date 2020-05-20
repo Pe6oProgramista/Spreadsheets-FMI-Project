@@ -18,6 +18,8 @@ namespace e_table {
             std::string token;
             std::istringstream tokenStream(s);
             while (std::getline(tokenStream, token, delimiter)) {
+                token = trim(token);
+                if(token == "") continue;
                 tokens.push_back(token);
             }
             return tokens;
@@ -30,6 +32,8 @@ namespace e_table {
             std::istringstream tokenStream(s);
             while (tokenStream.get(token)) {
                 if(delimiter.find(token)) {
+                    curr_str = trim(curr_str);
+                    if(curr_str == "") continue;
                     tokens.push_back(curr_str);
                     curr_str.clear();
                 } else {
@@ -57,10 +61,6 @@ namespace e_table {
             if(c < '0' || c > '9') return false;
             return true;
         }
-
-        // App load_app(std::string filename) {
-
-        // }
 
         std::vector<Operation*> generate_operations(App& app) {
             std::vector<Operation*> ops;

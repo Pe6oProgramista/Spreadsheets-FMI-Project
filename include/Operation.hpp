@@ -28,7 +28,7 @@ namespace e_table {
         std::size_t get_args_count() const { return args_count; }
         std::string get_args_names() const { return args_names; }
         
-        virtual void execute(std::vector<std::string>& args) = 0;
+        virtual void execute(const std::vector<std::string>& args) = 0;
     };
 
     class OperationException: virtual public std::exception {

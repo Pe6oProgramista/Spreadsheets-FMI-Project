@@ -16,8 +16,6 @@ namespace e_table {
 
         bool is_digit(int c);
 
-        App load_app(std::string filename);
-
         std::vector<Operation*> generate_operations();
     }
 }

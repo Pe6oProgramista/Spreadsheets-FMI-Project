@@ -8,7 +8,7 @@ namespace e_table {
     public:
         EditOperation(App& app);
         
-        void execute(std::vector<std::string>& args);
+        void execute(const std::vector<std::string>& args);
     };
 
 }

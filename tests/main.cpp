@@ -11,6 +11,10 @@
 #include "cells/FormulaCell.hpp"
 
 #include "operations/OpenOperation.hpp"
+#include "operations/CloseOperation.hpp"
+#include "operations/SaveOperation.hpp"
+#include "operations/SaveAsOperation.hpp"
+#include "operations/HelpOperation.hpp"
 #include "operations/ExitOperation.hpp"
 
 #include "operations/PrintOperation.hpp"
@@ -57,6 +61,10 @@ int main() {
 
     e_table::App app;
     app.add_operation(new e_table::OpenOperation(app));
+    app.add_operation(new e_table::CloseOperation(app));
+    app.add_operation(new e_table::SaveOperation(app));
+    app.add_operation(new e_table::SaveAsOperation(app));
+    app.add_operation(new e_table::HelpOperation(app));
     app.add_operation(new e_table::ExitOperation(app));
 
     app.add_operation(new e_table::PrintOperation(app));
@@ -69,6 +77,8 @@ int main() {
             std::getline(std::cin, command);
 
             std::vector<std::string> args = e_table::utils::split(command, ' ');
+            if(args.size() == 0) continue;
+            
             e_table::Operation* operation = app.find_operation(args[0]);
 
             args.erase(args.begin());

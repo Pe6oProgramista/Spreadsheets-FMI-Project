@@ -55,7 +55,7 @@ mk_build_dirs:
 	$(foreach d, $(SUBDIRS), mkdir "$(OBJ_DIR)/$d" &)
 
 mk_bin_dir:
-	mkdir $(BIN_DIR)
+	mkdir "$(BIN_DIR)" &
 
 clean_bin:
 ifeq ($(OSFLAG),WIN)

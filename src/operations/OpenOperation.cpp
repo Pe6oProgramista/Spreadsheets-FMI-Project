@@ -1,5 +1,6 @@
 #include <fstream>
 #include <string>
+#include <iostream>
 
 #include "operations/OpenOperation.hpp"
 #include "App.hpp"
@@ -9,7 +10,7 @@ namespace e_table {
     OpenOperation::OpenOperation(App& app)
         : Operation(app, "open", "opens <file>", 1, "<file>") {}
     
-    void OpenOperation::execute(std::vector<std::string>& args) {
+    void OpenOperation::execute(const std::vector<std::string>& args) {
         if(get_args_count() != args.size()) {
             throw OperationException("ERROR: Different count of arguments");
         }
@@ -21,6 +22,8 @@ namespace e_table {
 
         app.set_app_filename(args[0]);
         app.read(in);
+        app.set_status(true);
+        std::cout << "Successfully opened " << args[0] << '\n';
     }
 
 }
