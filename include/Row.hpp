@@ -4,60 +4,43 @@
 #include <string>
 
 #include "Cell.hpp"
+#include "utility/SmartPtr.hpp"
 
 namespace e_table {
     class Table;
 
     class Row {
-    public:
-        class Ptr {
-        private:
-            Row* r;
-        public:
-            Ptr() : r(nullptr) {}
-            Ptr(Row* r) : r(r) { ++r->count; }
-            Ptr(const Ptr& p) : r(p.r) { ++r->count; }
-            ~Ptr() { if (!is_null() && --r->count == 0) delete r; }
-
-            Ptr& operator= (const Ptr& p) {
-                Row* const old = r;
-                r = p.r;
-                ++r->count;
-                if (--old->count == 0) delete old;
-                return *this;
-            }
-            
-            Row* operator-> () const { return r; }
-            Row& operator* ()  { return *r; }
-
-            bool is_null() const { return r == nullptr; }
-        };
-
+    // fields
     private:
-        std::size_t count = 0;
-
-        std::vector<Cell::Ptr> cells;
         Table& table;
+        int indx;
 
+        std::vector<utils::SmartPtr<Cell>> cells;
+
+    // methods
     private:
-        Cell::Ptr read_cell(const std::string& data);
+        utils::SmartPtr<Cell> read_cell(const std::string& data, int cell_indx);
 
-    public:
-        Row(Table& table)
-            : table(table) {}
+    protected:
+        friend class Table;
 
-        Table& get_table() const;
-        const std::vector<Cell::Ptr>& get_cells() const;
-        void add_cell(const Cell::Ptr& cell);
-        Cell::Ptr& get_cell(std::size_t col);
+        Row(Table& table);
+
+        void add_cell(const utils::SmartPtr<Cell>& cell);
+        void add_cell(const std::string& str);
         void edit_cell(std::size_t col, const std::string& value);
-        std::size_t cells_cnt() const;
-        
+
         // read/write funcitons
         void read(std::istream& in);
         void write(std::ostream& out) const;
 
-        Row operator= (const Row& r);
+        Row& operator= (const Row& r);
+    
+    public:
+        int get_indx() const;
+        const Table& get_table() const;
+        utils::SmartPtr<const Cell> get_cell(const std::size_t& col) const;
+        std::size_t cells_cnt() const;
     };
 
     class RowException: virtual public std::exception {

@@ -5,16 +5,14 @@
 
 namespace e_table {
     
-    Cell::Cell(Row& row, std::string type, std::string formula)
-        : type(type), formula(formula), row(row) {
-            col = row.cells_cnt() + 1;
-        }
+    Cell::Cell(Row& row, int indx, std::string type, std::string formula)
+        : type(type), row(row), indx(indx), formula(formula) {}
 
     std::string Cell::get_type() const { return type; }
     
-    Row& Cell::get_row() const { return row; }
+    const Row& Cell::get_row() const { return row; }
     
-    int Cell::get_col() const { return col; }
+    int Cell::get_indx() const { return indx; }
 
     std::string Cell::get_formula() const { return formula; }
     

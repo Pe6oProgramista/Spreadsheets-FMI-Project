@@ -8,9 +8,16 @@
 #include "App.hpp"
 #include "Operation.hpp"
 #include "operations/OpenOperation.hpp"
+#include "operations/CloseOperation.hpp"
+#include "operations/SaveOperation.hpp"
+#include "operations/SaveAsOperation.hpp"
+#include "operations/HelpOperation.hpp"
+#include "operations/ExitOperation.hpp"
+
+#include "operations/PrintOperation.hpp"
+#include "operations/EditOperation.hpp"
 
 
-#include <iostream>
 namespace e_table {
     namespace utils {
         std::vector<std::string> split(const std::string& s, char delimiter) {
@@ -58,21 +65,21 @@ namespace e_table {
         }
 
         bool is_digit(int c) {
-            if(c < '0' || c > '9') return false;
-            return true;
+            return c >= '0' && c <= '9';
         }
 
-        std::vector<Operation*> generate_operations(App& app) {
-            std::vector<Operation*> ops;
+        void load_all_operations(App& app) {
+            // default operations
+            app.add_operation(new e_table::OpenOperation(app));
+            app.add_operation(new e_table::CloseOperation(app));
+            app.add_operation(new e_table::SaveOperation(app));
+            app.add_operation(new e_table::SaveAsOperation(app));
+            app.add_operation(new e_table::HelpOperation(app));
+            app.add_operation(new e_table::ExitOperation(app));
 
-            ops.push_back(new OpenOperation(app));
-            // ops.push_back(new CloseOperation(app));
-            // ops.push_back(new SaveOperation(app));
-            // ops.push_back(new SaveAsOperation(app));
-            // ops.push_back(new HelpOperation(app));
-            // ops.push_back(new ExitOperation(app));
-
-            return ops;
+            // additional operations
+            app.add_operation(new e_table::PrintOperation(app));
+            app.add_operation(new e_table::EditOperation(app));
         }
     }
 }

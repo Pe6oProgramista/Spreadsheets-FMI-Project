@@ -17,9 +17,7 @@ namespace e_table {
             throw OperationException("ERROR: Different count of arguments");
         }
 
-
-        app.get_table() = e_table::Table();
-        app.set_app_filename("");
+        app.init();
         app.set_status(false);
 
         std::cout << "Successfully closed " << app.get_app_filename() << '\n';

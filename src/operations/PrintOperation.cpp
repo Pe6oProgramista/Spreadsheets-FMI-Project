@@ -19,7 +19,8 @@ namespace e_table {
             throw OperationException("ERROR: Different count of arguments");
         }
 
-        app.get_const_table().print(std::cout);
+        // unsafe
+        app.get_table().print(std::cout);
     }
 
 }

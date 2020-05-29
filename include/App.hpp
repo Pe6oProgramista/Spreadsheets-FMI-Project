@@ -13,28 +13,30 @@ namespace e_table {
     private:
         Table table;
 
-        std::vector<Operation*> operations;
+        std::vector<utils::SmartPtr<Operation>> operations;
 
-        bool status = false;
         std::string app_filename;
+        bool status = false;
     
     public:
         App() = default;
         App(const App& app) = delete;
-        ~App();
 
+        void init();
+
+        // check "unsafe" to see where its used
         Table& get_table();
-        const Table& get_const_table() const;
+        
+        utils::SmartPtr<const Operation> get_operation(std::size_t indx) const;
+        void add_operation(utils::SmartPtr<Operation> operation);
+        utils::SmartPtr<Operation> find_operation(const std::string& name);
+        std::size_t ops_cnt() const;
 
         bool get_status() const;
         void set_status(bool status);
 
         std::string get_app_filename() const;
         void set_app_filename(std::string filename);
-    
-        const std::vector<Operation*>& get_operations() const;
-        void add_operation(Operation* operation);
-        Operation* find_operation(std::string name);
 
         // read/write funcitons
         void read(std::istream& in);

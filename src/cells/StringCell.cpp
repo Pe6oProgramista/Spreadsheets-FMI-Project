@@ -4,8 +4,8 @@
 
 namespace e_table {
 
-        StringCell::StringCell(Row& row, const std::string& formula)
-            : Cell(row, "string", formula) {
+        StringCell::StringCell(Row& row, int indx, const std::string& formula)
+            : Cell(row, indx, "string", formula) {
                 set_formula(formula);
         }
 

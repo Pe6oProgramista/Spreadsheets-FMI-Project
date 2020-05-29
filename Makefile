@@ -27,6 +27,7 @@ OBJ_DIR = build
 
 INC = $(INCLUDE_DIR:%=-I%)
 
+INCS = $(call rec_wildcard,$(INCLUDE_DIR)/,*.hpp)
 SRCS = $(call rec_wildcard,$(SRC_DIR)/,*.cpp)
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
@@ -48,7 +49,7 @@ endif
 
 build: $(OBJS)
 
-$(OBJS): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp | mk_build_dirs
+$(OBJS): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCS) | mk_build_dirs
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 mk_build_dirs:

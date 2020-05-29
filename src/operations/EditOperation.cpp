@@ -42,7 +42,7 @@ namespace e_table {
                     it++;
                 }
 
-                app.get_table().get_row(row)->edit_cell(col, value);
+                app.get_table().edit_cell(row - 1, col - 1, value);
                 return;
             }
         }

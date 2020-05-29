@@ -11,7 +11,7 @@ namespace e_table {
         std::string valid(std::string val);
 
     public:
-        DoubleCell(Row& row, const std::string& formula);
+        DoubleCell(Row& row, int indx, const std::string& formula);
 
         std::string get_value() const;
     };

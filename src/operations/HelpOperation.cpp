@@ -16,20 +16,21 @@ namespace e_table {
 
         std::cout << "The following commands are supported:\n";
 
-        const std::vector<Operation*>& ops = app.get_operations();
         std::size_t name_size = 0;
         std::size_t args_names_size = 0;
         std::size_t description_size = 0;
 
-        for(std::size_t i = 0; i < ops.size(); i++) {
-            if(name_size < ops[i]->get_name().size()) {
-                name_size = ops[i]->get_name().size();
+        std::size_t ops_cnt = app.ops_cnt();
+        for(std::size_t i = 0; i < ops_cnt; i++) {
+            utils::SmartPtr<const Operation> op = app.get_operation(i);
+            if(name_size < op->get_name().size()) {
+                name_size = op->get_name().size();
             }
-            if(args_names_size < ops[i]->get_args_names().size()) {
-                args_names_size = ops[i]->get_args_names().size();
+            if(args_names_size < op->get_args_names().size()) {
+                args_names_size = op->get_args_names().size();
             }
-            if(description_size < ops[i]->get_description().size()) {
-                description_size = ops[i]->get_description().size();
+            if(description_size < op->get_description().size()) {
+                description_size = op->get_description().size();
             }
         }
 
@@ -45,17 +46,18 @@ namespace e_table {
             << "description"
             << "\n\n";
 
-        for(std::size_t i = 0; i < ops.size(); i++) {
+        for(std::size_t i = 0; i < ops_cnt; i++) {
+            utils::SmartPtr<const Operation> op = app.get_operation(i);
             std::cout << "  "
                 << std::left
                 << std::setw(name_size)
-                << ops[i]->get_name()
+                << op->get_name()
                 << "  "
                 << std::setw(args_names_size)
-                << ops[i]->get_args_names()
+                << op->get_args_names()
                 << "  "
                 << std::setw(description_size)
-                << ops[i]->get_description()
+                << op->get_description()
                 << '\n';
         }
     }

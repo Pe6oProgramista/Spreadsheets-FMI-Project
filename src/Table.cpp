@@ -9,65 +9,86 @@
 
 namespace e_table {
 
-    const std::vector<Row::Ptr>& Table::get_rows() const { return rows; }
-
-    void Table::add_row(Row::Ptr& row) {
+    void Table::add_row(const utils::SmartPtr<Row>& row) {
         if(&row->get_table() != this) throw TableException("ERROR: Trying to add row from different table");
 
-        if(rows.size() == 0) {
-            cells_count = row->cells_cnt();
-        } else if(row->cells_cnt() != cells_count) {
-            std::stringstream ss;
-            ss << "ERROR: Missing cell in row " << rows.size() + 1;
-            throw TableException(ss.str());
+        if(rows.size() == 0 || row->cells_cnt() > max_cells_cnt) {
+            max_cells_cnt = row->cells_cnt();
         }
 
         rows.push_back(row);
      }
-    
-    Row::Ptr& Table::get_row(std::size_t row) {
-        if(row < 1 || row > rows.size()) {
-                throw TableException("ERROR: rows out of range");
-            }
 
-        return rows[row - 1];
+     void Table::add_row(const std::string& str) {
+        utils::SmartPtr<Row> row = new Row(*this);
+        std::istringstream iss(str);
+        row->read(iss);
+
+        rows.push_back(row);
+     }
+    
+    utils::SmartPtr<const Row> Table::get_row(std::size_t indx) const {
+        if(indx < 0 || indx >= rows.size()) {
+            throw TableException("ERROR: rows out of range");
+        }
+
+        return rows[indx];
+    }
+
+    std::size_t Table::rows_cnt() const { return rows.size(); }
+
+    std::string Table::get_cell_value(int row, int col) const {
+        return get_row(row)->get_cell(col)->get_value();
+    }
+
+    std::string Table::get_cell_formula(int row, int col) const {
+        return get_row(row)->get_cell(col)->get_formula();
+    }
+
+    void Table::edit_cell(int row, int col, std::string value) {
+        rows[row]->edit_cell(col, value);
     }
 
     // read/write functions
     void Table::read(std::istream& in) {
-        std::vector<Row::Ptr> rows;
-        std::size_t cells_count = 0;
+        std::vector<utils::SmartPtr<Row>> old_rows = rows;
+        std::size_t old_max_cells_cnt = max_cells_cnt;
+        
+        rows.clear();
+        max_cells_cnt = 0;
 
-        std::string line;
-        while(std::getline(in, line, '\n')) {
-            Row::Ptr row = new Row(*this);
-            std::istringstream iss(line);
-            row->read(iss);
+        try {
+            std::string line;
+            while(std::getline(in, line, '\n')) {
+                utils::SmartPtr<Row> row = new Row(*this);
+                std::istringstream iss(line);
+                row->read(iss);
 
-            if(rows.size() == 0 || row->cells_cnt() > cells_count) {
-                cells_count = row->cells_cnt();
+                if(rows.size() == 0 || row->cells_cnt() > max_cells_cnt) {
+                    max_cells_cnt = row->cells_cnt();
+                }
+                rows.push_back(row);
             }
-            rows.push_back(row);
+        } catch(std::exception& e) {
+            rows = old_rows;
+            max_cells_cnt = old_max_cells_cnt;
+            throw;
         }
-
-        this->rows = rows;
-        this->cells_count = cells_count;
     }
     
     void Table::write(std::ostream& out) const {
-        for(const Row::Ptr& r : rows) {
+        for(const utils::SmartPtr<Row>& r : rows) {
             r->write(out);
             out << '\n';
         }
     }
 
     void Table::print(std::ostream& out) const {
-        std::vector<std::size_t> max_cell_sizes(cells_count, 0);
+        std::vector<std::size_t> max_cell_sizes(max_cells_cnt, 0);
         std::vector<std::string> values;
         for(std::size_t i = 0; i < rows.size(); i++) {
-            const std::vector<Cell::Ptr>& cells = rows[i]->get_cells();
-            for(std::size_t j = 0; j < cells_count; j++) {
-                std::string new_val = (j < rows[i]->cells_cnt()) ? cells[j]->get_value() : "";
+            for(std::size_t j = 0; j < max_cells_cnt; j++) {
+                std::string new_val = (j < rows[i]->cells_cnt()) ? get_cell_value(i, j) : "";
                 if(max_cell_sizes[j] < new_val.size()) {
                     max_cell_sizes[j] = new_val.size();
                 }
@@ -78,10 +99,10 @@ namespace e_table {
 
         for(std::size_t i = 0; i < rows.size(); i++) {
             out << "| ";
-            for(std::size_t j = 0; j < cells_count; j++) {
+            for(std::size_t j = 0; j < max_cells_cnt; j++) {
                 out << std::left
                     << std::setw(max_cell_sizes[j])
-                    << values[i * cells_count + j]
+                    << values[i * max_cells_cnt + j]
                     << " | ";
             }
             out << '\n';

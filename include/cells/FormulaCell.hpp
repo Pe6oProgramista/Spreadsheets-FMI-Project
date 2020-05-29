@@ -18,15 +18,33 @@ namespace e_table {
         double parse(const std::string& val) const;
         static int priority(const char& op);
         static double exec_bin_op(char op, double val1, double val2);
-        double calculate(std::size_t i, double res, std::size_t& next, int prior) const;
+        double calculate_recursive(std::size_t i, double res, std::size_t& next, int prior) const;
+        double calculate() const;
     
     public:
-        FormulaCell(Row& row, const std::string& formula);
+        FormulaCell(Row& row, int indx, const std::string& formula);
         
         std::string get_value() const;
+    };
 
-        void set_values(std::vector<std::string>& values) { this->values = values; }
-        void set_ops(std::vector<char>& ops) { operations = ops; }
+    class BinOperationException: virtual public std::exception {
+    protected:
+        std::string error_message;
+        
+    public:
+        BinOperationException(const std::string& msg)
+            : error_message(msg) {}
+
+        virtual ~BinOperationException() throw () {}
+        
+        virtual const char* what() const throw () { return error_message.c_str(); }
+    };
+
+    class FormulaCellException: public CellException {        
+    public:
+        FormulaCellException(const std::string& msg)
+            : CellException(msg) {}
+
     };
 
 }
