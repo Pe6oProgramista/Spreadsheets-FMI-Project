@@ -73,7 +73,10 @@ namespace e_table {
 
                         // checks for reference to previous cells
                         if(row - 1 == this->row.get_indx() && col - 1 == indx) throw FormulaCellException("ERROR: You try to make circular reference");
-                        if(row - 1 <= this->row.get_indx() && col - 1 <= indx) {
+                        // if(row - 1 <= this->row.get_indx() && col - 1 <= indx) {
+                        if(this->row.get_table().rows_cnt() > (std::size_t)row - 1 &&
+                            this->row.get_table().get_row(row-1)->cells_cnt() > (std::size_t)col - 1) {
+                            
                             utils::SmartPtr<const Cell> cell = this->row.get_table().get_row(row - 1)->get_cell(col - 1);
                             utils::SmartPtr<const FormulaCell> ref_cell = utils::smart_ptr_cast<const FormulaCell>(cell);
                             if (!ref_cell.is_null()) {

@@ -28,10 +28,18 @@ namespace e_table {
                 }
             }
 
-            SmartPtr(const SmartPtr& p) : t(p.t), count(p.count) { ++(*count); }
+            SmartPtr(const SmartPtr& p) : t(p.t), count(p.count) { 
+                if(t != nullptr) {
+                    ++(*count);
+                }
+            }
 
             template<class Z>
-            SmartPtr(const SmartPtr<Z>& p) : t(p.t), count(p.count) { ++(*count); }
+            SmartPtr(const SmartPtr<Z>& p) : t(p.t), count(p.count) {
+                if(t != nullptr) {
+                    ++(*count);
+                }
+            }
 
             ~SmartPtr() {
                 if(!is_null() && --(*count) == 0) {
@@ -41,17 +49,15 @@ namespace e_table {
             }
 
             SmartPtr& operator= (const SmartPtr& p) {
-                T* const old_t = t;
-                unsigned int* const old_count = count;
+                if (t != nullptr && --(*count) == 0) {
+                    delete t;
+                    delete count;
+                }
 
                 t = p.t;
                 count = p.count;
-                ++(*count);
+                if(!p.is_null()) ++(*count);
 
-                if (old_t != nullptr && --(*old_count) == 0) {
-                    delete old_t;
-                    delete old_count;
-                }
                 return *this;
             }
 
